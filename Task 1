@@ -1,1 +1,141 @@
 ONLINE RESERVATION SYSTEM
+import java.util.*;
+
+class ReservationSystem {
+    private static Map<String, Reservation> reservations = new HashMap<>();
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean isLoggedIn = false;
+        
+        while (!isLoggedIn) {
+            System.out.print("Enter username: ");
+            String username = scanner.nextLine();
+            System.out.print("Enter password: ");
+            String password = scanner.nextLine();
+            
+            if (isValidUser(username, password)) {
+                isLoggedIn = true;
+            } else {
+                System.out.println("Invalid credentials. Please try again.");
+            }
+        }
+        
+        System.out.println("Logged in successfully!");
+        
+        while (true) {
+            System.out.println("Options:");
+            System.out.println("1. Make a reservation");
+            System.out.println("2. Cancel a reservation");
+            System.out.println("3. Exit");
+            
+            int choice = scanner.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    makeReservation();
+                    break;
+                case 2:
+                    cancelReservation();
+                    break;
+                case 3:
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    private static boolean isValidUser(String username, String password) {
+        // Add your validation logic here (e.g., check against a database)
+        return true;
+    }
+
+    private static void makeReservation() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter your name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter train number: ");
+        String trainNumber = scanner.nextLine();
+        System.out.print("Enter class type: ");
+        String classType = scanner.nextLine();
+        System.out.print("Enter date of journey: ");
+        String dateOfJourney = scanner.nextLine();
+        System.out.print("Enter source: ");
+        String source = scanner.nextLine();
+        System.out.print("Enter destination: ");
+        String destination = scanner.nextLine();
+
+        Reservation reservation = new Reservation(name, trainNumber, classType, dateOfJourney, source, destination);
+        reservations.put(reservation.getPnrNumber(), reservation);
+
+        System.out.println("Reservation successful! Your PNR number is: " + reservation.getPnrNumber());
+    }
+
+    private static void cancelReservation() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter PNR number: ");
+        String pnrNumber = scanner.nextLine();
+
+        if (reservations.containsKey(pnrNumber)) {
+            Reservation reservation = reservations.get(pnrNumber);
+            System.out.println("Reservation details:");
+            System.out.println(reservation);
+
+            System.out.print("Do you want to confirm cancellation? (y/n): ");
+            String confirm = scanner.nextLine();
+            
+            if (confirm.equalsIgnoreCase("y")) {
+                reservations.remove(pnrNumber);
+                System.out.println("Reservation cancelled successfully.");
+            } else {
+                System.out.println("Cancellation not confirmed.");
+            }
+        } else {
+            System.out.println("No reservation found with the provided PNR number.");
+        }
+    }
+}
+
+class Reservation {
+    private static int counter = 1000;
+    private String pnrNumber;
+    private String name;
+    private String trainNumber;
+    private String classType;
+    private String dateOfJourney;
+    private String source;
+    private String destination;
+
+    public Reservation(String name, String trainNumber, String classType, String dateOfJourney, String source, String destination) {
+        this.pnrNumber = generatePNR();
+        this.name = name;
+        this.trainNumber = trainNumber;
+        this.classType = classType;
+        this.dateOfJourney = dateOfJourney;
+        this.source = source;
+        this.destination = destination;
+    }
+
+    private String generatePNR() {
+        counter++;
+        return "PNR" + counter;
+    }
+
+    public String getPnrNumber() {
+        return pnrNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "PNR Number: " + pnrNumber +
+                "\nName: " + name +
+                "\nTrain Number: " + trainNumber +
+                "\nClass Type: " + classType +
+                "\nDate of Journey: " + dateOfJourney +
+                "\nSource: " + source +
+                "\nDestination: " + destination;
+    }
+}
